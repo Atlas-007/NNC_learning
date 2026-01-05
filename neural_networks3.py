@@ -1,30 +1,30 @@
 import numpy as np
 import pandas as pd
 
-# Load the Iris dataset
+# Load dataset
 url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
 data = pd.read_csv(url, header=None)
 data.columns = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species']
-X = data.drop('species', axis=1).values  # Features
-labels = data['species'].values  # True labels
+X = data.drop('species', axis=1).values  
+labels = data['species'].values  
 
-# Convert labels to numeric format manually
+
 unique_labels, y_true = np.unique(labels, return_inverse=True)
 num_classes = len(unique_labels)
 
-# Convert labels to one-hot encoding for loss calculation
+
 def to_one_hot(labels, num_classes):
     one_hot = np.zeros((len(labels), num_classes))
     one_hot[np.arange(len(labels)), labels] = 1
     return one_hot
 
-# Shuffle the data
+# Shuffle
 def shuffle_data(X, y):
     indices = np.arange(X.shape[0])
     np.random.shuffle(indices)
     return X[indices], y[indices]
 
-# Split data into training and testing sets
+# Split data into training and testing
 def train_test_split(X, y, test_size):
     X, y = shuffle_data(X, y)
     split_index = int(len(X) * (1 - test_size))
@@ -33,10 +33,10 @@ def train_test_split(X, y, test_size):
     return X_train, X_test, y_train, y_test
 
 # Parameters
-test_size = 0.2  # 20% of the data for testing
+test_size = 0.2  
 X_train, X_test, y_train, y_test = train_test_split(X, y_true, test_size)
 
-# Convert labels to one-hot encoding
+# Convert labels
 y_train_one_hot = to_one_hot(y_train, num_classes)
 y_test_one_hot = to_one_hot(y_test, num_classes)
 
@@ -110,7 +110,7 @@ activation2 = Activation_Softmax()   # Softmax activation function for output la
 learning_rate = 0.001
 epochs = 400
 
-# Training phase
+# Training 
 for epoch in range(epochs):
     # Forward pass
     layer1.forward(X_train)               
@@ -118,7 +118,7 @@ for epoch in range(epochs):
     layer2.forward(activation1.output)   
     activation2.forward(layer2.output)   
 
-    # Calculate loss
+     # Calculate loss
     loss_function = Loss_Entropy()
     loss = loss_function.calculate(activation2.output, y_train)
     print(f"Epoch {epoch + 1}, Loss: {loss}")
@@ -130,20 +130,19 @@ for epoch in range(epochs):
     dvalues = activation1.backward(dvalues)
     dvalues = layer1.backward(dvalues)
 
-    # Update weights and biases
+    
     layer1.weights -= learning_rate * layer1.dweights
     layer1.biases -= learning_rate * layer1.dbiases
     layer2.weights -= learning_rate * layer2.dweights
     layer2.biases -= learning_rate * layer2.dbiases
 
 # Testing phase
-# Forward pass on test data
 layer1.forward(X_test)
 activation1.forward(layer1.output)
 layer2.forward(activation1.output)
 activation2.forward(layer2.output)
 
-# Convert predictions to class labels
+
 y_pred = np.argmax(activation2.output, axis=1)
 
 # Calculate loss and accuracy

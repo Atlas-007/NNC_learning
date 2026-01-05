@@ -6,10 +6,10 @@ def save_iris_data(num_rows=5):
     column_names = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species']
     iris = pd.read_csv(url, header=None, names=column_names)
     
-    # Extract the first 'num_rows' rows and the first 4 columns
+    
     X = iris.iloc[:num_rows, 0:4].values  
     
-    np.save('iris_features.npy', X)  # Save the data to a .npy file
+    np.save('iris_features.npy', X)  
 
 save_iris_data(num_rows=5)
 
